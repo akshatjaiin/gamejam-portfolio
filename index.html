@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akshat Jaiin | Retro Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f0f1f;
+            --accent: #00ff41;
+            --accent-dim: #008f11;
+            --text: #e0e0e0;
+            --secondary: #ff0055;
+            --ui-border: 4px solid var(--text);
+        }
+
+        * {
+            box-sizing: border-box;
+            cursor: crosshair; /* Retro cursor */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text);
+            font-family: 'Press Start 2P', monospace;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Scanline effect */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header / HUD */
+        header {
+            border-bottom: var(--ui-border);
+            padding: 20px 0;
+            margin-bottom: 40px;
+            text-align: center;
+            text-transform: uppercase;
+            text-shadow: 4px 4px 0px var(--secondary);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--accent);
+            margin: 0;
+        }
+
+        .subtitle {
+            font-size: 0.7rem;
+            color: #fff;
+            margin-top: 10px;
+            animation: blink 1s infinite;
+        }
+
+        /* Navigation / Level Select */
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: #222;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            padding: 10px 20px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.7rem;
+            text-decoration: none;
+            transition: 0.2s;
+            box-shadow: 4px 4px 0 #000;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent);
+            color: #000;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 #000;
+        }
+
+        /* Sections */
+        section {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--text);
+            padding: 20px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        section::after {
+            content: "";
+            position: absolute;
+            top: -6px;
+            left: 10px;
+            background: var(--bg-color);
+            padding: 0 10px;
+            color: var(--secondary);
+            font-size: 0.8rem;
+        }
+
+        #about::after { content: "PLAYER_BIO"; }
+        #projects::after { content: "MISSION_SELECT"; }
+        #game::after { content: "BONUS_STAGE"; }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-bar {
+            margin-bottom: 15px;
+        }
+
+        .stat-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.6rem;
+            margin-bottom: 5px;
+        }
+
+        .bar-container {
+            width: 100%;
+            height: 20px;
+            background: #333;
+            border: 2px solid #fff;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 0%; /* Animated via JS */
+            transition: width 1.5s ease-out;
+            position: relative;
+        }
+
+        /* Projects List */
+        .project-card {
+            border: 2px dashed var(--secondary);
+            padding: 15px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+            background: #1a1a1a;
+        }
+
+        .project-card:hover {
+            border-style: solid;
+            background: #252525;
+            transform: scale(1.02);
+        }
+
+        .project-title {
+            color: var(--secondary);
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .project-desc {
+            font-size: 0.6rem;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+
+        .tags {
+            font-size: 0.5rem;
+            color: var(--accent);
+        }
+
+        /* Game Canvas */
+        #game-canvas {
+            background: #000;
+            border: 4px solid var(--accent);
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+        }
+        
+        .game-controls {
+            text-align: center;
+            font-size: 0.6rem;
+            margin-top: 10px;
+            color: #888;
+        }
+
+        .btn-start {
+            display: block;
+            margin: 20px auto;
+            background: var(--secondary);
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            font-size: 0.6rem;
+            padding: 40px 0;
+            color: #666;
+        }
+
+        /* Animations */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Avatar */
+        .avatar-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .pixel-avatar {
+            width: 100px;
+            height: 100px;
+            background: var(--accent);
+            display: inline-block;
+            box-shadow: 
+                10px 0 #0f0f1f, -10px 0 #0f0f1f,
+                0 -10px #0f0f1f, 0 10px #0f0f1f,
+                20px 0 var(--text), -20px 0 var(--text),
+                0 -20px var(--text), 0 20px var(--text);
+            image-rendering: pixelated;
+        }
+        
+        .contact-link {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>AKSHAT JAIIN</h1>
+        <div class="subtitle">PRESS START TO ENTER PORTFOLIO</div>
+    </header>
+
+    <nav>
+        <a href="#about" class="nav-btn">PLAYER INFO</a>
+        <a href="#projects" class="nav-btn">MISSIONS</a>
+        <a href="#game" class="nav-btn">BONUS STAGE</a>
+        <a href="https://github.com/akshatjaiin" target="_blank" class="nav-btn">GITHUB</a>
+    </nav>
+
+    <section id="about">
+        <div class="avatar-container">
+            <img src="https://github.com/akshatjaiin.png" alt="Avatar" style="width: 100px; border: 4px solid var(--text); image-rendering: pixelated;">
+        </div>
+        <p style="text-align: center; font-size: 0.7rem; margin-bottom: 30px;">
+            Full Stack Developer | Game Enthusiast | Creative Coder<br>
+            Base: India
+        </p>
+
+        <div class="stats-grid">
+            <div class="stat-col">
+                <div class="stat-bar">
+                    <div class="stat-label"><span>PYTHON</span><span>LVL 99</span></div>
+                    <div class="bar-container"><div class="bar-fill" style="width: 90%"></div></div>
+                </div>
+                <div class="stat-bar">
+                    <div class="stat-label"><span>JAVASCRIPT</span><span>LVL 85</span></div>
+                    <div class="bar-container"><div class="bar-fill" style="width: 85%"></div></div>
+                </div>
+                <div class="stat-bar">
+                    <div class="stat-label"><span>HTML/CSS</span><span>LVL 90</span></div>
+                    <div class="bar-container"><div class="bar-fill" style="width: 90%"></div></div>
+                </div>
+            </div>
+            <div class="stat-col">
+                <div class="stat-bar">
+                    <div class="stat-label"><span>GAME DEV</span><span>LVL 75</span></div>
+                    <div class="bar-container"><div class="bar-fill" style="width: 75%"></div></div>
+                </div>
+                <div class="stat-bar">
+                    <div class="stat-label"><span>AI/ML</span><span>LVL 80</span></div>
+                    <div class="bar-container"><div class="bar-fill" style="width: 80%"></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects">
+        
+        <div class="project-card">
+            <h3 class="project-title">Ticket Booking Chatbot</h3>
+            <p class="project-desc">
+                A virtual chatbot for booking museum tickets using Google Generative AI (Gemini). 
+                Handles natural language interactions and JSON data structuring.
+            </p>
+            <div class="tags">[PYTHON] [AI] [CHATBOT]</div>
+            <a href="https://github.com/akshatjaiin/ticket" target="_blank" class="nav-btn" style="display:inline-block; margin-top:10px; font-size:0.5rem">VIEW SOURCE</a>
+        </div>
+
+        <div class="project-card">
+            <h3 class="project-title">LinkedIn Profile Analyzer</h3>
+            <p class="project-desc">
+                Automated tool to scrape and analyze LinkedIn profiles for resume suggestions using AI.
+            </p>
+            <div class="tags">[PYTHON] [WEB SCRAPING] [HTML]</div>
+            <a href="https://github.com/akshatjaiin/LINKEDIN" target="_blank" class="nav-btn" style="display:inline-block; margin-top:10px; font-size:0.5rem">VIEW SOURCE</a>
+        </div>
+
+        <div class="project-card">
+            <h3 class="project-title">Farm-Saathi</h3>
+            <p class="project-desc">
+                Agriculture support platform designed to help farmers with modern CSS styling and responsive interfaces.
+            </p>
+            <div class="tags">[CSS] [WEB DESIGN] [FRONTEND]</div>
+            <a href="https://github.com/akshatjaiin/Farm-Saathi" target="_blank" class="nav-btn" style="display:inline-block; margin-top:10px; font-size:0.5rem">VIEW SOURCE</a>
+        </div>
+
+         <div class="project-card" style="border-color: var(--accent);">
+            <h3 class="project-title" style="color: var(--accent)">RETRO SHOOTER (TUTORIAL)</h3>
+            <p class="project-desc">
+                A pure JavaScript 2D space shooter engine. Features collision detection, particle effects, and game loops.
+                <br><br>
+                <span style="color:#fff; background:var(--secondary); padding:2px 5px;">PLAYABLE BELOW</span>
+            </p>
+            <div class="tags">[JAVASCRIPT] [CANVAS] [GAME DEV]</div>
+        </div>
+
+    </section>
+
+    <section id="game">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="font-size: 1rem; color: var(--accent);">MINI-GAME: NEON DEFENSE</h2>
+            <p style="font-size: 0.6rem;">Destroy the red glitches! Don't let them pass.</p>
+        </div>
+        
+        <canvas id="game-canvas" width="600" height="300"></canvas>
+        <button class="btn-start" onclick="startGame()">START GAME</button>
+        <div class="game-controls">
+            [LEFT CLICK] to Shoot | [MOUSE] to Aim
+        </div>
+    </section>
+
+    <footer>
+        <p>GAME OVER</p>
+        <p>CONTINUE? <span style="animation: blink 1s infinite;">9</span></p>
+        <p>Built by <a href="https://github.com/akshatjaiin" class="contact-link">Akshat Jaiin</a></p>
+    </footer>
+</div>
+
+<script>
+    // --- ANIMATE SKILL BARS ON LOAD ---
+    window.addEventListener('load', () => {
+        const bars = document.querySelectorAll('.bar-fill');
+        bars.forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.width = width;
+            }, 500);
+        });
+    });
+
+    // --- GAME ENGINE ---
+    const canvas = document.getElementById('game-canvas');
+    const ctx = canvas.getContext('2d');
+    let gameLoopId;
+    let isPlaying = false;
+    let score = 0;
+
+    // Game Objects
+    let player = { x: 50, y: 150, size: 20, color: '#00ff41' };
+    let bullets = [];
+    let enemies = [];
+    let particles = [];
+
+    // Mouse Tracking
+    let mouseX = 0;
+    let mouseY = 0;
+    canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+        // Move player vertically with mouse
+        player.y = mouseY; 
+    });
+
+    canvas.addEventListener('mousedown', () => {
+        if(isPlaying) {
+            bullets.push({
+                x: player.x + 10,
+                y: player.y,
+                vx: 10,
+                vy: 0,
+                size: 5
+            });
+        }
+    });
+
+    function spawnEnemy() {
+        if(!isPlaying) return;
+        enemies.push({
+            x: canvas.width,
+            y: Math.random() * canvas.height,
+            vx: -(Math.random() * 3 + 2),
+            size: 15 + Math.random() * 10
+        });
+        setTimeout(spawnEnemy, 1000 - Math.min(score * 10, 800));
+    }
+
+    function createExplosion(x, y, color) {
+        for(let i=0; i<10; i++) {
+            particles.push({
+                x: x, 
+                y: y,
+                vx: (Math.random() - 0.5) * 5,
+                vy: (Math.random() - 0.5) * 5,
+                life: 1.0,
+                color: color
+            });
+        }
+    }
+
+    function update() {
+        if(!isPlaying) return;
+
+        // Clear Canvas
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw Player
+        ctx.fillStyle = player.color;
+        ctx.fillRect(player.x - player.size/2, player.y - player.size/2, player.size, player.size);
+
+        // Update Bullets
+        ctx.fillStyle = '#fff';
+        for(let i = bullets.length - 1; i >= 0; i--) {
+            let b = bullets[i];
+            b.x += b.vx;
+            ctx.fillRect(b.x, b.y, b.size, 2);
+            if(b.x > canvas.width) bullets.splice(i, 1);
+        }
+
+        // Update Enemies
+        ctx.fillStyle = '#ff0055';
+        for(let i = enemies.length - 1; i >= 0; i--) {
+            let e = enemies[i];
+            e.x += e.vx;
+            ctx.fillRect(e.x - e.size/2, e.y - e.size/2, e.size, e.size);
+
+            // Collision Player vs Enemy
+            let dx = player.x - e.x;
+            let dy = player.y - e.y;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+            if(dist < (player.size/2 + e.size/2)) {
+                gameOver();
+            }
+
+            // Collision Bullet vs Enemy
+            for(let j = bullets.length - 1; j >= 0; j--) {
+                let b = bullets[j];
+                let bdx = b.x - e.x;
+                let bdy = b.y - e.y;
+                let bdist = Math.sqrt(bdx*bdx + bdy*bdy);
+                
+                if(bdist < e.size/2) {
+                    createExplosion(e.x, e.y, '#ff0055');
+                    enemies.splice(i, 1);
+                    bullets.splice(j, 1);
+                    score += 10;
+                    break;
+                }
+            }
+
+            if(e.x < 0) {
+                enemies.splice(i, 1);
+                score -= 5; // Penalty for letting them pass
+            }
+        }
+
+        // Update Particles
+        for(let i = particles.length - 1; i >= 0; i--) {
+            let p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.life -= 0.05;
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.life;
+            ctx.fillRect(p.x, p.y, 2, 2);
+            ctx.globalAlpha = 1.0;
+            if(p.life <= 0) particles.splice(i, 1);
+        }
+
+        // UI
+        ctx.fillStyle = '#fff';
+        ctx.font = '10px "Press Start 2P"';
+        ctx.fillText("SCORE: " + score, 10, 20);
+
+        gameLoopId = requestAnimationFrame(update);
+    }
+
+    function startGame() {
+        if(isPlaying) return;
+        score = 0;
+        enemies = [];
+        bullets = [];
+        particles = [];
+        isPlaying = true;
+        document.querySelector('.btn-start').style.display = 'none';
+        spawnEnemy();
+        update();
+    }
+
+    function gameOver() {
+        isPlaying = false;
+        cancelAnimationFrame(gameLoopId);
+        ctx.fillStyle = 'rgba(0,0,0,0.8)';
+        ctx.fillRect(0,0,canvas.width, canvas.height);
+        ctx.fillStyle = '#ff0055';
+        ctx.font = '20px "Press Start 2P"';
+        ctx.fillText("GAME OVER", canvas.width/2 - 80, canvas.height/2);
+        ctx.fillStyle = '#fff';
+        ctx.font = '10px "Press Start 2P"';
+        ctx.fillText("Final Score: " + score, canvas.width/2 - 60, canvas.height/2 + 30);
+        document.querySelector('.btn-start').style.display = 'block';
+        document.querySelector('.btn-start').textContent = "TRY AGAIN";
+    }
+
+    // Initial draw
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#fff';
+    ctx.font = '10px "Press Start 2P"';
+    ctx.fillText("READY PLAYER ONE", canvas.width/2 - 70, canvas.height/2);
+
+</script>
+</body>
+</html>
