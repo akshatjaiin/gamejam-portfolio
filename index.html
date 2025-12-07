@@ -2,212 +2,231 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akshat Jain | Game Dev Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Akshat Jain | System Online</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --bg-color: #212529; /* Dark Godot-like grey */
-            --primary-accent: #478cbf; /* Godot Blue */
-            --game-grass: #6abe30; /* Pixel art grass green */
-            --game-sky: #5fcde4;
-            --text-color: #f8f9fa;
-            --card-bg: #2b3035;
+            --bg-color: #0d0d12;
+            --card-bg: #1a1a20;
+            --primary: #00ff41; /* Hacker Green */
+            --secondary: #478cbf; /* Godot Blue */
+            --alert: #ff0055; /* Glitch Red */
+            --gold: #ffd700;
             --pixel-font: 'Press Start 2P', cursive;
-            --ui-font: 'Roboto', sans-serif;
+            --mono-font: 'Share Tech Mono', monospace;
+        }
+
+        /* --- CRT EFFECT OVERLAY --- */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 9999;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
         }
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--ui-font);
+            color: #dcdcdc;
+            font-family: var(--mono-font);
             overflow-x: hidden;
+            touch-action: pan-y;
         }
 
-        /* --- TYPOGRAPHY & UTILS --- */
-        h1, h2, h3, .pixel-text {
-            font-family: var(--pixel-font);
-            text-transform: uppercase;
-            line-height: 1.5;
+        /* TYPOGRAPHY */
+        h1, h2, h3, .pixel-text { font-family: var(--pixel-font); text-transform: uppercase; letter-spacing: 1px; }
+        .text-green { color: var(--primary); text-shadow: 0 0 5px var(--primary); }
+        .text-blue { color: var(--secondary); text-shadow: 0 0 5px var(--secondary); }
+        .text-gold { color: var(--gold); }
+
+        /* GLITCH ANIMATION */
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
         }
 
-        .text-accent { color: var(--primary-accent); }
-        .text-grass { color: var(--game-grass); }
-
-        /* --- NAVBAR HUD --- */
+        /* NAVBAR */
         .navbar {
-            background-color: rgba(33, 37, 41, 0.95);
-            border-bottom: 4px solid var(--primary-accent);
+            background-color: rgba(13, 13, 18, 0.95);
+            border-bottom: 2px solid var(--primary);
             padding: 1rem;
+            z-index: 1000;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
         }
-        .navbar-brand {
-            font-family: var(--pixel-font);
-            font-size: 1rem;
-            color: var(--game-grass) !important;
-            text-shadow: 2px 2px #000;
-        }
-        .nav-link {
-            font-family: var(--pixel-font);
-            font-size: 0.7rem;
-            color: #fff !important;
-            margin-left: 15px;
-            transition: color 0.2s;
-        }
-        .nav-link:hover {
-            color: var(--primary-accent) !important;
-            text-decoration: underline;
-        }
+        .navbar-brand { font-family: var(--pixel-font); font-size: 0.8rem; color: var(--primary) !important; }
+        .nav-link { font-family: var(--mono-font); font-size: 1rem; color: #fff !important; margin-left: 15px; text-transform: uppercase; }
+        .nav-link:hover { color: var(--primary) !important; text-decoration: underline; }
 
-        /* --- HERO SECTION (GAME SCREEN) --- */
+        /* HERO SECTION */
         #hero-game {
             position: relative;
-            height: 60vh;
-            min-height: 500px;
-            background: linear-gradient(to bottom, #3a404d 0%, #212529 100%); /* Night sky gradient */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-bottom: 8px solid #3e2723; /* Dirt floor border */
+            height: 100vh;
+            max-height: 800px;
+            background: #000;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 4px solid var(--primary);
         }
-
-        #game-canvas {
+        #platformer-canvas {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.6; 
         }
-
         .hero-overlay {
             position: relative;
-            z-index: 2;
+            z-index: 10;
             text-align: center;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 2rem;
-            border: 4px solid #fff;
-            box-shadow: 8px 8px 0px rgba(0,0,0,0.5);
-            max-width: 800px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 2.5rem;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
+            max-width: 700px;
+            width: 90%;
         }
 
-        .btn-game {
-            font-family: var(--pixel-font);
-            background-color: var(--primary-accent);
-            border: none;
-            box-shadow: 4px 4px 0px #1a3c5e;
-            color: white;
-            padding: 15px 30px;
-            font-size: 0.8rem;
-            transition: transform 0.1s;
-            margin-top: 20px;
-        }
-        .btn-game:active {
-            transform: translate(4px, 4px);
-            box-shadow: none;
-        }
-        .btn-secondary-game {
-            background-color: var(--game-grass);
-            box-shadow: 4px 4px 0px #2e5912;
-        }
-
-        /* --- SECTIONS --- */
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-            font-size: 1.5rem;
-            color: var(--primary-accent);
-            text-shadow: 2px 2px 0 #000;
-        }
-
-        /* --- STATS CARD (ABOUT) --- */
-        .stats-card {
-            background: var(--card-bg);
-            border: 2px solid #555;
-            padding: 2rem;
-            border-radius: 4px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-        .progress {
-            height: 20px;
-            background-color: #111;
-            border-radius: 0;
-            margin-bottom: 1.5rem;
-            border: 1px solid #555;
-        }
-        .progress-bar {
-            background-color: var(--game-grass);
-            font-family: var(--pixel-font);
-            font-size: 0.5rem;
-            line-height: 20px;
-            text-align: left;
-            padding-left: 10px;
-            overflow: visible;
+        /* TYPING EFFECT */
+        .typing-container {
+            display: inline-block;
+            overflow: hidden;
             white-space: nowrap;
+            border-right: 3px solid var(--primary);
+            animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+            font-family: var(--pixel-font);
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 15px;
         }
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--primary); } }
 
-        /* --- PROJECT CARDS --- */
+        /* PFP */
+        .pfp-container {
+            width: 130px; height: 130px; margin: 0 auto 20px;
+            border: 4px solid var(--primary);
+            box-shadow: 0 0 20px var(--primary);
+            border-radius: 50%;
+            overflow: hidden;
+            background: #000;
+        }
+        .pfp-img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* CARDS */
+        .section-title {
+            text-align: center; margin: 5rem 0 3rem;
+            font-size: 1.5rem; color: #fff;
+            border-bottom: 2px solid #333;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
         .project-card {
-            background: #1a1a1a;
-            border: 2px solid #444;
-            transition: transform 0.2s, border-color 0.2s;
+            background: var(--card-bg);
+            border: 1px solid #333;
             height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: 0.3s;
             position: relative;
+            overflow: hidden;
         }
         .project-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-accent);
-            box-shadow: 0 0 15px rgba(71, 140, 191, 0.3);
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
+            animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both;
         }
-        .project-img-placeholder {
-            height: 150px;
-            background: #111;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--pixel-font);
-            color: #555;
-            font-size: 3rem;
-            border-bottom: 2px solid #444;
+        .project-icon {
+            font-size: 3rem; padding: 20px; background: #111;
+            text-align: center; border-bottom: 1px solid #333;
         }
-        .card-body {
-            padding: 1.5rem;
-        }
+        .card-content { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
         .badge-tech {
-            background-color: #333;
-            color: var(--primary-accent);
-            border: 1px solid var(--primary-accent);
-            font-family: var(--pixel-font);
-            font-size: 0.5rem;
-            padding: 5px 8px;
-            margin-right: 5px;
+            background: rgba(0, 255, 65, 0.1);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            font-family: var(--mono-font);
+            font-size: 0.7rem; padding: 4px 8px; margin: 0 4px 6px 0;
+            display: inline-block;
+        }
+        .badge-hack {
+            background: var(--gold); color: #000; font-weight: bold;
+            font-family: var(--pixel-font); font-size: 0.6rem;
+            padding: 5px; display: block; text-align: center; margin-bottom: 10px;
         }
 
-        /* --- FOOTER --- */
-        footer {
-            background: #111;
-            padding: 2rem 0;
-            text-align: center;
-            border-top: 4px solid var(--primary-accent);
-            font-family: var(--pixel-font);
-            font-size: 0.7rem;
+        /* INVENTORY (SKILLS) */
+        .inventory-panel {
+            background: #0f0f12;
+            border: 2px solid #333;
+            padding: 20px;
         }
-        .social-link {
-            font-size: 1.5rem;
-            color: #fff;
-            margin: 0 10px;
-            transition: color 0.2s;
+        .skill-tag {
+            display: inline-block;
+            background: #1a1a20;
+            border-left: 3px solid var(--secondary);
+            color: #ccc;
+            padding: 5px 10px; margin: 3px;
+            font-size: 0.8rem;
+            transition: 0.2s;
         }
-        .social-link:hover { color: var(--game-grass); }
+        .skill-tag:hover { background: var(--secondary); color: #fff; transform: scale(1.05); }
 
-        /* Responsive Fixes */
+        /* ARCADE GAME */
+        #arcade { background: #050505; border-top: 2px dashed var(--alert); border-bottom: 2px dashed var(--alert); padding: 50px 0; }
+        .game-wrapper {
+            position: relative; width: 100%; max-width: 600px; margin: 0 auto;
+            border: 4px solid var(--alert); box-shadow: 0 0 20px var(--alert);
+            aspect-ratio: 2 / 1;
+        }
+        #shooter-canvas { width: 100%; height: 100%; display: block; background: #000; cursor: crosshair; }
+        #game-over-screen {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); flex-direction: column; justify-content: center; align-items: center; z-index: 20;
+        }
+
+        /* CONTACT FORM */
+        .form-card { background: var(--card-bg); border: 2px solid var(--primary); padding: 2rem; }
+        .form-control, .form-select {
+            background-color: #000; border: 1px solid #444; color: var(--primary);
+            font-family: var(--mono-font); border-radius: 0;
+        }
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0,255,65,0.3); background: #000; color: #fff; }
+
+        /* BUTTONS */
+        .btn-retro {
+            background: transparent; border: 2px solid var(--primary); color: var(--primary);
+            font-family: var(--pixel-font); font-size: 0.7rem; padding: 10px 20px;
+            text-transform: uppercase; transition: 0.2s; cursor: pointer; text-decoration: none; display: inline-block;
+        }
+        .btn-retro:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
+        .btn-linkedin {
+            border-color: #0a66c2; color: #0a66c2;
+        }
+        .btn-linkedin:hover {
+            background: #0a66c2; color: #fff; box-shadow: 0 0 15px #0a66c2;
+        }
+        .btn-submit { width: 100%; margin-top: 15px; }
+
+        footer { border-top: 1px solid #333; padding: 4rem 0; text-align: center; background: #0d0d12; }
+        .social-icon { font-size: 2rem; color: #555; margin: 0 15px; transition: 0.3s; }
+        .social-icon:hover { color: var(--primary); transform: scale(1.2); text-shadow: 0 0 10px var(--primary); }
+
         @media (max-width: 768px) {
-            .navbar-brand { font-size: 0.8rem; }
+            .hero-overlay { padding: 1.5rem; }
+            .typing-container { font-size: 0.8rem; white-space: normal; animation: none; border: none; }
             h1 { font-size: 1.2rem; }
+            .game-wrapper { width: 95%; }
         }
     </style>
 </head>
@@ -215,137 +234,153 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#"><i class="fas fa-gamepad"></i> AKSHAT JAIIN</a>
+            <a class="navbar-brand" href="#"><i class="fas fa-terminal"></i> SYS.ADMIN: AKSHAT JAIN</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="#hero-game">START</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#stats">STATS</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#quests">QUESTS</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contact">CONNECT</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#hero-game">HOME</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#quests">PROJECTS</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#inventory">SKILLS</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#arcade">GAME</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">CONTACT</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
     <section id="hero-game">
-        <canvas id="game-canvas"></canvas>
+        <canvas id="platformer-canvas"></canvas>
         <div class="hero-overlay">
-            <h1 class="mb-3">LEVEL 1: THE PORTFOLIO</h1>
-            <p class="mb-4">CS Student | Godot Developer | Python Enthusiast</p>
+            <div class="pfp-container">
+                <img src="https://github.com/akshatjaiin.png" alt="Akshat PFP" class="pfp-img">
+            </div>
+            
+            <h1 class="text-green mb-2">AKSHAT JAIN</h1>
+            <div class="typing-container">FOUNDER E-CELL | AI ENGINEER | GAME DEV</div>
+            
+            <p class="mb-4 text-white" style="font-size: 0.9rem;">
+                Specializing in <span class="text-blue">Python, Godot & Full Stack</span>.
+                <br>Building the future of AI & Interactive Tech.
+            </p>
+            
             <div class="d-flex justify-content-center gap-3 flex-wrap">
-                <a href="#quests" class="btn btn-game">VIEW PROJECTS</a>
-                <a href="https://github.com/akshatjaiin" target="_blank" class="btn btn-game btn-secondary-game"><i class="fab fa-github"></i> GITHUB</a>
-                <button class="btn btn-game btn-secondary-game" onclick="toggleGameControl()">CONTROLS: [SPACE] JUMP</button>
+                <a href="#quests" class="btn-retro">INITIALIZE PROJECTS</a>
+                <a href="https://github.com/akshatjaiin" target="_blank" class="btn-retro" style="border-color:#fff; color:#fff"><i class="fab fa-github"></i> GITHUB</a>
             </div>
         </div>
     </section>
 
-    <section id="stats" class="container py-5" style="margin-top: 50px;">
-        <h2 class="section-title">PLAYER STATS</h2>
-        <div class="row align-items-center">
-            <div class="col-md-4 text-center mb-4">
-                <div style="width: 200px; height: 200px; margin: 0 auto; background: url('https://github.com/akshatjaiin.png') center/cover; border: 4px solid #fff; box-shadow: 5px 5px 0 var(--primary-accent); image-rendering: pixelated;"></div>
-                <div class="mt-3">
-                    <h4 class="pixel-text">AKSHAT JAIN</h4>
-                    <span class="badge bg-danger pixel-text">LVL 21</span>
-                    <span class="badge bg-success pixel-text">CLASS: CODER</span>
-                </div>
-            </div>
-            <div class="col-md-8">
-                <div class="stats-card">
-                    <h5 class="pixel-text mb-4 text-accent">> SKILL TREE</h5>
-                    
-                    <label class="pixel-text mb-1">PYTHON / AI</label>
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: 90%;">90%</div>
-                    </div>
-
-                    <label class="pixel-text mb-1">GODOT / GAME DEV</label>
-                    <div class="progress">
-                        <div class="progress-bar bg-info" role="progressbar" style="width: 75%;">75%</div>
-                    </div>
-
-                    <label class="pixel-text mb-1">WEB (HTML/CSS/JS)</label>
-                    <div class="progress">
-                        <div class="progress-bar bg-warning text-dark" role="progressbar" style="width: 85%;">85%</div>
-                    </div>
-
-                    <label class="pixel-text mb-1">C++ / DSA</label>
-                    <div class="progress">
-                        <div class="progress-bar bg-danger" role="progressbar" style="width: 70%;">70%</div>
-                    </div>
-
-                    <p class="mt-4 text-muted small">
-                        <i class="fas fa-info-circle"></i> Currently equipping skills in Machine Learning and Full Stack Development. Based in Rajasthan, India.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="quests" class="container py-5">
-        <h2 class="section-title">ACTIVE QUESTS</h2>
-        <div class="row g-4">
+    <section id="quests" class="container">
+        <div class="text-center"><h2 class="section-title">ACTIVE MISSIONS</h2></div>
+        <div class="row g-4 justify-content-center">
             
             <div class="col-md-6 col-lg-4">
                 <div class="project-card">
-                    <div class="project-img-placeholder" style="background: #2b3035; color: var(--game-grass);">
-                        <i class="fas fa-ghost"></i>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title pixel-text">Falled Knight</h5>
-                        <p class="card-text small text-muted">
-                            A 2D Platformer made with Godot Engine. Features physics-based movement, enemy AI (Slimes), coin collection, and "kill zones". Inspired by Brackeys.
+                    <div class="badge-hack"><i class="fas fa-trophy"></i> HACKATHON WINNER [cite: 49]</div>
+                    <div class="project-icon text-green"><i class="fas fa-seedling"></i></div>
+                    <div class="card-content">
+                        <h5 class="pixel-text">Kisan AI (Farm-Saathi)</h5>
+                        <p class="small text-muted">
+                            Smart farming assistant using <b>Custom Neural Networks</b> for yield prediction [cite: 50] and OpenAI for real-time advice[cite: 51].
                         </p>
-                        <div class="mb-3">
-                            <span class="badge-tech">GODOT</span>
+                        <div class="mt-auto">
+                            <span class="badge-tech">REACT</span>
+                            <span class="badge-tech">MONGODB</span>
+                            <span class="badge-tech">NEURAL NETS</span>
+                            <a href="https://github.com/akshatjaiin/Farm-Saathi" target="_blank" class="btn-retro w-100 mt-3">ACCESS REPO</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="project-card">
+                    <div class="project-icon text-blue"><i class="fas fa-ghost"></i></div>
+                    <div class="card-content">
+                        <h5 class="pixel-text">Falled Knight</h5>
+                        <p class="small text-muted">
+                            A polished 2D Action Platformer. Implements physics-based movement, enemy AI state machines, and level design.
+                        </p>
+                        <div class="mt-auto">
+                            <span class="badge-tech">GODOT 4</span>
                             <span class="badge-tech">GDSCRIPT</span>
                             <span class="badge-tech">GAME DEV</span>
+                            <a href="https://github.com/akshatjaiin/GameGodot" target="_blank" class="btn-retro w-100 mt-3">PLAY / CODE</a>
                         </div>
-                        <a href="https://github.com/akshatjaiin/GameGodot" target="_blank" class="btn btn-sm btn-outline-light w-100" style="font-family: var(--pixel-font); font-size: 0.6rem;">PLAY / VIEW CODE</a>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-6 col-lg-4">
                 <div class="project-card">
-                    <div class="project-img-placeholder" style="color: #ffc107;">
-                        <i class="fas fa-ticket-alt"></i>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title pixel-text">Museum Ticket Bot</h5>
-                        <p class="card-text small text-muted">
-                            AI Chatbot for booking tickets. Uses Google Gemini API for NLP and JSON structuring to handle user bookings seamlessly.
+                    <div class="project-icon" style="color: #fff"><i class="fas fa-briefcase"></i></div>
+                    <div class="card-content">
+                        <h5 class="pixel-text">Placement.AI</h5>
+                        <p class="small text-muted">
+                            One-stop career solution with ATS resume analysis and personalized learning paths[cite: 52, 53].
                         </p>
-                        <div class="mb-3">
-                            <span class="badge-tech">PYTHON</span>
-                            <span class="badge-tech">AI</span>
-                            <span class="badge-tech">GEMINI</span>
+                        <div class="mt-auto">
+                            <span class="badge-tech">NEXT.JS</span>
+                            <span class="badge-tech">OPENAI</span>
+                            <span class="badge-tech">FULL STACK</span>
+                            <a href="https://www.linkedin.com/in/akshatjaiin/recent-activity/all/" target="_blank" class="btn-retro btn-linkedin w-100 mt-3"><i class="fab fa-linkedin"></i> VIEW POST</a>
                         </div>
-                        <a href="https://github.com/akshatjaiin/ticket" target="_blank" class="btn btn-sm btn-outline-light w-100" style="font-family: var(--pixel-font); font-size: 0.6rem;">VIEW CODE</a>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-6 col-lg-4">
                 <div class="project-card">
-                    <div class="project-img-placeholder" style="color: #0d6efd;">
-                        <i class="fab fa-linkedin"></i>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title pixel-text">LinkedIn Analyzer</h5>
-                        <p class="card-text small text-muted">
-                            Tool to scrape and analyze LinkedIn profiles to generate resume improvement suggestions using AI.
+                    <div class="project-icon text-gold"><i class="fas fa-robot"></i></div>
+                    <div class="card-content">
+                        <h5 class="pixel-text">Museum Ticket Bot</h5>
+                        <p class="small text-muted">
+                            AI chatbot utilizing Google Gemini API for NLP and JSON structuring for automated booking[cite: 68].
                         </p>
-                        <div class="mb-3">
+                        <div class="mt-auto">
                             <span class="badge-tech">PYTHON</span>
-                            <span class="badge-tech">SCRAPING</span>
                             <span class="badge-tech">LLM</span>
+                            <span class="badge-tech">GEMINI</span>
+                            <a href="https://github.com/akshatjaiin/ticket" target="_blank" class="btn-retro w-100 mt-3">ACCESS REPO</a>
                         </div>
-                        <a href="https://github.com/akshatjaiin/LINKEDIN" target="_blank" class="btn btn-sm btn-outline-light w-100" style="font-family: var(--pixel-font); font-size: 0.6rem;">VIEW CODE</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="project-card">
+                    <div class="badge-hack" style="background:var(--secondary);">RUNNER-UP [cite: 69]</div>
+                    <div class="project-icon" style="color: #0a66c2"><i class="fab fa-linkedin"></i></div>
+                    <div class="card-content">
+                        <h5 class="pixel-text">Profile Analyzer</h5>
+                        <p class="small text-muted">
+                            Python automation tool using Selenium to scrape and analyze profiles for resume optimization[cite: 69].
+                        </p>
+                        <div class="mt-auto">
+                            <span class="badge-tech">PYTHON</span>
+                            <span class="badge-tech">SELENIUM</span>
+                            <a href="https://github.com/akshatjaiin/LINKEDIN" target="_blank" class="btn-retro w-100 mt-3">ACCESS REPO</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="project-card">
+                    <div class="badge-hack" style="background:#666; color:#fff">FINALIST [cite: 65]</div>
+                    <div class="project-icon text-white"><i class="fas fa-rocket"></i></div>
+                    <div class="card-content">
+                        <h5 class="pixel-text">Linkedin Posts</h5>
+                        <p class="small text-muted">
+                            mostly hackathons
+                        </p>
+                        <div class="mt-auto">
+                            <span class="badge-tech">everthing</span>
+                            <span class="badge-tech">Please visit</span>
+                            <a href="https://www.linkedin.com/in/akshatjaiin/recent-activity/all/" target="_blank" class="btn-retro btn-linkedin w-100 mt-3"><i class="fab fa-linkedin"></i> VIEW POST</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -353,255 +388,288 @@
         </div>
     </section>
 
-    <section id="contact" class="py-5" style="background: #1a1a1a;">
-        <div class="container text-center">
-            <h2 class="section-title">JOIN PARTY?</h2>
-            <p class="mb-4">Ready to collaborate on the next big project.</p>
-            
-            <div class="d-flex justify-content-center gap-4 mb-4">
-                <a href="https://linkedin.com/in/akshatjaiin" class="social-link"><i class="fab fa-linkedin"></i></a>
-                <a href="https://github.com/akshatjaiin" class="social-link"><i class="fab fa-github"></i></a>
-                <a href="https://instagram.com/akshat_senpai" class="social-link"><i class="fab fa-instagram"></i></a>
-                <a href="mailto:akshatjain1567@gmail.com" class="social-link"><i class="fas fa-envelope"></i></a>
+    <section id="inventory" class="container mt-5">
+        <div class="text-center"><h2 class="section-title">SKILL INVENTORY</h2></div>
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="inventory-panel">
+                    <h5 class="text-green mb-3">> LANGUAGES & CORE</h5>
+                    <span class="skill-tag">Python (Expert) [cite: 10]</span>
+                    <span class="skill-tag">C++ / C [cite: 10]</span>
+                    <span class="skill-tag">Java [cite: 10]</span>
+                    <span class="skill-tag">JavaScript / TS [cite: 13]</span>
+                    <span class="skill-tag">HTML5 / CSS3 [cite: 13]</span>
+                    
+                    <h5 class="text-green mb-3 mt-4">> AI & DATA</h5>
+                    <span class="skill-tag">OpenCV [cite: 19]</span>
+                    <span class="skill-tag">YOLO [cite: 67]</span>
+                    <span class="skill-tag">TensorFlow [cite: 59]</span>
+                    <span class="skill-tag">NumPy / Pandas [cite: 19]</span>
+                    <span class="skill-tag">Bias Detection [cite: 13]</span>
+                </div>
             </div>
+            <div class="col-lg-6">
+                <div class="inventory-panel">
+                    <h5 class="text-blue mb-3">> WEB & CLOUD</h5>
+                    <span class="skill-tag">React / Next.js [cite: 21]</span>
+                    <span class="skill-tag">Django [cite: 21]</span>
+                    <span class="skill-tag">AWS / GCP [cite: 11]</span>
+                    <span class="skill-tag">Docker [cite: 11]</span>
+                    <span class="skill-tag">MongoDB / Redis [cite: 13]</span>
+                    
+                    <h5 class="text-blue mb-3 mt-4">> CERTIFICATIONS</h5>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-medal text-gold me-2"></i> <small>AI Trainer (Aerophantom) [cite: 79]</small>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-medal text-gold me-2"></i> <small>CS50P (Harvard) [cite: 80]</small>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-medal text-gold me-2"></i> <small>C Language (IIT Bombay) [cite: 84]</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-            <a href="https://bento.me/akshatjain" target="_blank" class="btn btn-game">VIEW FULL BENTO</a>
+    <section id="arcade">
+        <div class="container text-center">
+            <h2 class="pixel-text text-white mb-3" style="text-shadow: 2px 2px #ff0055;">NEON SURVIVAL</h2>
+            <p class="text-muted small mb-4">PC: MOUSE AIM | MOBILE: TOUCH DRAG</p>
+            
+            <div class="game-wrapper">
+                <canvas id="shooter-canvas" width="600" height="300"></canvas>
+                <div id="game-over-screen">
+                    <h2 class="text-danger pixel-text">SYSTEM FAILURE</h2>
+                    <p id="final-score" class="text-white pixel-text mb-4">SCORE: 0</p>
+                    <button class="btn-retro" onclick="resetShooter()">REBOOT SYSTEM</button>
+                </div>
+            </div>
+            
+            <button id="start-btn" class="btn-retro mt-4" onclick="startShooter()">START GAME</button>
+        </div>
+    </section>
+
+    <section id="contact" class="container mb-5 mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="form-card">
+                    <div class="text-center mb-4">
+                        <h5 class="pixel-text text-green">ESTABLISH UPLINK</h5>
+                    </div>
+                    <form id="myForm">
+                        <div class="mb-3">
+                            <label>CODENAME (NAME):</label>
+                            <input type="text" class="form-control" name="Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>FREQ (EMAIL):</label>
+                            <input type="email" class="form-control" name="Email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>SIGNAL (PHONE):</label>
+                            <input type="tel" class="form-control" name="Phone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>ORIGIN:</label>
+                            <select class="form-select" name="Found" required>
+                                <option value="linkedin">LinkedIn</option>
+                                <option value="github">GitHub</option>
+                                <option value="bento">Bento.me</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn-retro btn-submit" onclick="SubForm()">SEND PACKET</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </section>
 
     <footer>
         <div class="container">
-            <p>© 2025 AKSHAT JAIN. MADE WITH <i class="fas fa-heart text-danger"></i> & GODOT VIBES.</p>
+            <p class="mb-4 text-muted pixel-text">© 2025 AKSHAT JAIN. ALL SYSTEMS NORMAL.</p>
+            <div class="d-flex justify-content-center">
+                <a href="https://linkedin.com/in/akshatjaiin" target="_blank" class="social-icon"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/akshatjaiin" target="_blank" class="social-icon"><i class="fab fa-github"></i></a>
+                <a href="https://bento.me/akshatjain" target="_blank" class="social-icon"><i class="fas fa-link"></i></a>
+                <a href="https://instagram.com/akshat_senpai" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
+            </div>
         </div>
     </footer>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
-        const canvas = document.getElementById('game-canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height;
+        // --- FORM LOGIC ---
+        function SubForm (){
+            const btn = document.querySelector('.btn-submit');
+            const originalText = btn.innerText;
+            btn.innerText = "TRANSMITTING...";
+            btn.disabled = true;
 
-        // Resize handling
-        function resize() {
-            width = canvas.width = document.getElementById('hero-game').offsetWidth;
-            height = canvas.height = document.getElementById('hero-game').offsetHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        // Game State
-        const game = {
-            gravity: 0.6,
-            ground: height - 40, // Ground level from top
-            frame: 0
-        };
-
-        // Entities
-        const player = {
-            x: 50,
-            y: height - 100,
-            width: 32,
-            height: 32,
-            dy: 0,
-            jumpPower: -12,
-            grounded: false,
-            color: '#478cbf' // Godot Blue
-        };
-
-        const platforms = [];
-        const slimes = [];
-        const particles = [];
-
-        // Generate World
-        function initWorld() {
-            game.ground = height - 20;
-            // Add some platforms
-            platforms.length = 0;
-            platforms.push({x: width * 0.3, y: height - 100, w: 100, h: 20});
-            platforms.push({x: width * 0.6, y: height - 180, w: 120, h: 20});
-            
-            // Add Slimes
-            slimes.length = 0;
-            slimes.push({x: width * 0.4, y: height - 120, w: 24, h: 24, dx: 2, type: 'slime'});
-            slimes.push({x: width * 0.8, y: height - 40, w: 24, h: 24, dx: -1.5, type: 'slime'});
-        }
-
-        // Input
-        let keys = {};
-        window.addEventListener('keydown', e => {
-            keys[e.code] = true;
-            if (e.code === 'Space' && player.grounded) {
-                player.dy = player.jumpPower;
-                player.grounded = false;
-                createParticles(player.x + player.width/2, player.y + player.height, '#fff', 5);
-            }
-        });
-        window.addEventListener('keyup', e => keys[e.code] = false);
-
-        // Helper: Draw Pixel Art Rectangle
-        function drawRect(x, y, w, h, color) {
-            ctx.fillStyle = color;
-            ctx.fillRect(Math.floor(x), Math.floor(y), w, h);
-            // Border for pixel art feel
-            ctx.strokeStyle = 'rgba(0,0,0,0.3)';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(Math.floor(x), Math.floor(y), w, h);
-        }
-
-        function createParticles(x, y, color, count) {
-            for(let i=0; i<count; i++){
-                particles.push({
-                    x: x, y: y,
-                    dx: (Math.random() - 0.5) * 5,
-                    dy: (Math.random() - 0.5) * 5,
-                    life: 1.0,
-                    color: color
-                });
-            }
-        }
-
-        function update() {
-            ctx.clearRect(0, 0, width, height);
-
-            // 1. Draw Background Grid (Godot Editor Style)
-            ctx.strokeStyle = '#2d333b';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            for(let x=0; x<width; x+=40) { ctx.moveTo(x,0); ctx.lineTo(x,height); }
-            for(let y=0; y<height; y+=40) { ctx.moveTo(0,y); ctx.lineTo(width,y); }
-            ctx.stroke();
-
-            // 2. Physics & Player
-            // Auto-run if no keys pressed (demo mode)
-            if (!keys['ArrowRight'] && !keys['ArrowLeft']) {
-                // Idle drift or minimal movement for ambience
-            } else {
-                if (keys['ArrowLeft']) player.x -= 5;
-                if (keys['ArrowRight']) player.x += 5;
-            }
-
-            // Keep player in bounds (wrap around)
-            if (player.x > width) player.x = -player.width;
-            if (player.x < -player.width) player.x = width;
-
-            player.dy += game.gravity;
-            player.y += player.dy;
-
-            // Ground Collision
-            if (player.y + player.height > game.ground) {
-                player.y = game.ground - player.height;
-                player.dy = 0;
-                player.grounded = true;
-            } else {
-                player.grounded = false;
-            }
-
-            // Platform Collision
-            platforms.forEach(p => {
-                if (player.y + player.height > p.y && 
-                    player.y + player.height < p.y + p.h + 10 &&
-                    player.x + player.width > p.x && 
-                    player.x < p.x + p.w &&
-                    player.dy > 0) {
-                    player.y = p.y - player.height;
-                    player.dy = 0;
-                    player.grounded = true;
+            $.ajax({
+                url: "https://api.apispreadsheets.com/data/0pg6V1sJyPTeXo0O/",
+                type: "post",
+                data: JSON.stringify($("#myForm").serializeArray().reduce((obj, item) => {
+                    obj[item.name] = item.value; return obj;
+                }, {})),
+                contentType: "application/json",
+                success: function(){
+                    alert("PACKET RECEIVED.");
+                    document.getElementById("myForm").reset();
+                    btn.innerText = originalText; btn.disabled = false;
+                },
+                error: function(){
+                    alert("TRANSMISSION ERROR.");
+                    btn.innerText = originalText; btn.disabled = false;
                 }
-                drawRect(p.x, p.y, p.w, p.h, '#3e2723'); // Dirt color
-                // Grass top
-                drawRect(p.x, p.y, p.w, 5, '#6abe30');
             });
+        }
 
-            // 3. Draw Player (Knight placeholder)
-            drawRect(player.x, player.y, player.width, player.height, player.color);
-            // Eyes
-            ctx.fillStyle = 'white';
-            ctx.fillRect(player.x + 20, player.y + 8, 4, 4); 
-
-            // 4. Update & Draw Slimes
-            slimes.forEach((s, index) => {
-                s.x += s.dx;
-                // Bounce off walls or just patrol limits
-                if(s.x > width || s.x < 0) s.dx *= -1;
+        // --- BACKGROUND GAME (GODOT STYLE) ---
+        (function() {
+            const canvas = document.getElementById('platformer-canvas');
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            function resize() {
+                w = canvas.width = document.getElementById('hero-game').offsetWidth;
+                h = canvas.height = document.getElementById('hero-game').offsetHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+            const player = { x: 50, y: 100, dx: 2, dy: 0, size: 24, color: '#478cbf' };
+            const platforms = [];
+            function init() {
+                platforms.push({x: w*0.1, y: h-100, w: 100, h: 20});
+                platforms.push({x: w*0.4, y: h-200, w: 150, h: 20});
+                platforms.push({x: w*0.7, y: h-150, w: 120, h: 20});
+            }
+            function update() {
+                ctx.clearRect(0,0,w,h);
+                // Cyber Grid
+                ctx.strokeStyle = 'rgba(0, 255, 65, 0.1)';
+                ctx.lineWidth = 1;
+                for(let x=0; x<w; x+=40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
                 
-                // Gravity for slimes
-                let sGrounded = false;
-                if(s.y + s.h < game.ground) {
-                    s.y += 2; // Simple gravity
-                }
+                player.x += player.dx;
+                if(player.x > w || player.x < 0) player.dx *= -1;
+                player.dy += 0.5;
+                player.y += player.dy;
 
-                // Platform checks for slimes
+                let ground = h - 20;
+                if(player.y + player.size > ground) { player.y = ground - player.size; player.dy = -13; }
+
                 platforms.forEach(p => {
-                    if (s.y + s.h > p.y && s.y + s.h < p.y + 10 && 
-                        s.x > p.x && s.x < p.x + p.w) {
-                        s.y = p.y - s.h;
+                    ctx.fillStyle = '#1a1a1a'; ctx.fillRect(p.x, p.y, p.w, p.h); 
+                    ctx.fillStyle = '#00ff41'; ctx.fillRect(p.x, p.y, p.w, 2);   
+                    if(player.y + player.size > p.y && player.y + player.size < p.y + p.h + 10 &&
+                       player.x > p.x && player.x < p.x + p.w && player.dy > 0) { player.dy = -13; }
+                });
+
+                ctx.fillStyle = player.color; ctx.fillRect(player.x, player.y, player.size, player.size);
+                ctx.shadowBlur = 10; ctx.shadowColor = player.color;
+                
+                ctx.fillStyle = '#00ff41'; ctx.fillRect(0, h-20, w, 20);
+                ctx.shadowBlur = 0;
+                requestAnimationFrame(update);
+            }
+            init();
+            requestAnimationFrame(update);
+        })();
+
+        // --- ARCADE SHOOTER (TOUCH & RESPONSIVE) ---
+        let shooterId;
+        let isGameRunning = false;
+        const sCanvas = document.getElementById('shooter-canvas');
+        const sCtx = sCanvas.getContext('2d');
+        let sPlayer = { x: 50, y: 150, size: 20 };
+        let bullets = [];
+        let enemies = [];
+        let score = 0;
+        let particles = [];
+
+        function getCanvasY(clientY) {
+            const rect = sCanvas.getBoundingClientRect();
+            const scaleY = sCanvas.height / rect.height; 
+            return (clientY - rect.top) * scaleY;
+        }
+
+        sCanvas.addEventListener('mousemove', e => { if(isGameRunning) sPlayer.y = getCanvasY(e.clientY); });
+        sCanvas.addEventListener('mousedown', (e) => { if(isGameRunning) bullets.push({x: sPlayer.x+10, y: sPlayer.y, size: 5}); });
+        sCanvas.addEventListener('touchmove', e => { e.preventDefault(); if(isGameRunning) sPlayer.y = getCanvasY(e.touches[0].clientY); }, {passive: false});
+        sCanvas.addEventListener('touchstart', (e) => { if(isGameRunning) { sPlayer.y = getCanvasY(e.touches[0].clientY); bullets.push({x: sPlayer.x+10, y: sPlayer.y, size: 5}); } }, {passive: false});
+
+        function spawnEnemy() {
+            if(!isGameRunning) return;
+            enemies.push({x: sCanvas.width, y: Math.random()*(sCanvas.height-20), size: 20, speed: 2 + Math.random()*2});
+            setTimeout(spawnEnemy, 1000 - Math.min(score*5, 800));
+        }
+
+        function createExplosion(x, y, color) {
+            for(let i=0; i<8; i++) { particles.push({x: x, y: y, dx: (Math.random()-0.5)*5, dy: (Math.random()-0.5)*5, life: 1, color: color}); }
+        }
+
+        function resetShooter() {
+            document.getElementById('game-over-screen').style.display = 'none';
+            document.getElementById('start-btn').style.display = 'none';
+            bullets = []; enemies = []; particles = []; score = 0;
+            isGameRunning = true; spawnEnemy(); loopShooter();
+        }
+
+        function startShooter() { resetShooter(); }
+
+        function loopShooter() {
+            if(!isGameRunning) return;
+            sCtx.clearRect(0,0, sCanvas.width, sCanvas.height);
+
+            // Player
+            sCtx.fillStyle = '#00ff41'; sCtx.fillRect(sPlayer.x, sPlayer.y-10, 20, 20);
+            sCtx.shadowBlur = 10; sCtx.shadowColor = '#00ff41';
+
+            // Bullets
+            sCtx.fillStyle = '#fff'; sCtx.shadowBlur = 5; sCtx.shadowColor = '#fff';
+            bullets.forEach((b, i) => {
+                b.x += 8; sCtx.fillRect(b.x, b.y, 8, 3);
+                if(b.x > sCanvas.width) bullets.splice(i,1);
+            });
+
+            // Enemies
+            sCtx.fillStyle = '#ff0055'; sCtx.shadowBlur = 10; sCtx.shadowColor = '#ff0055';
+            enemies.forEach((e, i) => {
+                e.x -= e.speed; sCtx.fillRect(e.x, e.y, e.size, e.size);
+
+                bullets.forEach((b, j) => {
+                    let dx = b.x - e.x; let dy = b.y - e.y;
+                    if(Math.sqrt(dx*dx+dy*dy) < 20) {
+                        createExplosion(e.x, e.y, '#ff0055'); enemies.splice(i,1); bullets.splice(j,1); score += 10;
                     }
                 });
 
-                // Simple Jump animation (squash/stretch visually)
-                let wobble = Math.sin(Date.now() / 100) * 2;
-                
-                // Draw Slime
-                ctx.fillStyle = '#6abe30'; // Green
-                ctx.beginPath();
-                ctx.arc(s.x + s.w/2, s.y + s.h/2 + wobble, s.w/2, 0, Math.PI*2);
-                ctx.fill();
-                
-                // Draw Eyes
-                ctx.fillStyle = 'black';
-                ctx.fillRect(s.x + 8, s.y + 8 + wobble, 4, 4);
-                ctx.fillRect(s.x + 16, s.y + 8 + wobble, 4, 4);
-
-                // Collision with Player
-                if (player.x < s.x + s.w &&
-                    player.x + player.width > s.x &&
-                    player.y < s.y + s.h &&
-                    player.y + player.height > s.y) {
-                    
-                    // Kill Slime if falling
-                    if (player.dy > 0) {
-                        player.dy = -10; // Bounce
-                        createParticles(s.x, s.y, '#6abe30', 10);
-                        slimes.splice(index, 1);
-                    }
-                }
+                if (e.x < sPlayer.x + 20 && e.x + e.size > sPlayer.x && e.y < sPlayer.y + 10 && e.y + e.size > sPlayer.y - 10) { gameOver(); }
+                if(e.x < 0) enemies.splice(i,1);
             });
 
-            // 5. Particles
+            // Particles
+            sCtx.shadowBlur = 0;
             particles.forEach((p, i) => {
-                p.x += p.dx;
-                p.y += p.dy;
-                p.life -= 0.05;
-                ctx.fillStyle = p.color;
-                ctx.globalAlpha = p.life;
-                ctx.fillRect(p.x, p.y, 4, 4);
-                ctx.globalAlpha = 1.0;
-                if(p.life <= 0) particles.splice(i, 1);
+                p.x += p.dx; p.y += p.dy; p.life -= 0.1;
+                sCtx.fillStyle = p.color; sCtx.globalAlpha = p.life; sCtx.fillRect(p.x, p.y, 3, 3);
+                sCtx.globalAlpha = 1.0;
+                if(p.life <= 0) particles.splice(i,1);
             });
 
-            // Ground Draw
-            drawRect(0, game.ground, width, height - game.ground, '#3e2723');
-            drawRect(0, game.ground, width, 10, '#6abe30'); // Grass layer
-
-            requestAnimationFrame(update);
+            // Score
+            sCtx.fillStyle = '#fff'; sCtx.font = '12px "Press Start 2P"'; sCtx.fillText("SCORE: " + score, 10, 25);
+            shooterId = requestAnimationFrame(loopShooter);
         }
 
-        // Init
-        initWorld();
-        requestAnimationFrame(update);
-        
-        // Resize listener re-init
-        window.addEventListener('resize', () => {
-            initWorld();
-        });
-
-        function toggleGameControl() {
-            alert("Click inside the game area or just press Space/Arrow keys to control the blue knight!");
-            player.y = 0; // Reset player pos
+        function gameOver() {
+            isGameRunning = false; cancelAnimationFrame(shooterId);
+            document.getElementById('final-score').innerText = "FINAL SCORE: " + score;
+            document.getElementById('game-over-screen').style.display = 'flex';
         }
-
     </script>
 </body>
 </html>
