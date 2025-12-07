@@ -3,230 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Akshat Jain | System Online</title>
+    <title>Akshat Jain | Game Developer</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --bg-color: #0d0d12;
-            --card-bg: #1a1a20;
-            --primary: #00ff41; /* Hacker Green */
-            --secondary: #478cbf; /* Godot Blue */
-            --alert: #ff0055; /* Glitch Red */
-            --gold: #ffd700;
+            --bg-color: #212529; /* Godot Editor Grey */
+            --card-bg: #2b3035;
+            --godot-blue: #478cbf;
+            --pixel-green: #6abe30;
+            --text-main: #f8f9fa;
             --pixel-font: 'Press Start 2P', cursive;
-            --mono-font: 'Share Tech Mono', monospace;
-        }
-
-        /* --- CRT EFFECT OVERLAY --- */
-        body::before {
-            content: " ";
-            display: block;
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 9999;
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
         }
 
         body {
             background-color: var(--bg-color);
-            color: #dcdcdc;
-            font-family: var(--mono-font);
+            color: var(--text-main);
+            font-family: 'Roboto', sans-serif;
             overflow-x: hidden;
             touch-action: pan-y;
         }
 
-        /* TYPOGRAPHY */
-        h1, h2, h3, .pixel-text { font-family: var(--pixel-font); text-transform: uppercase; letter-spacing: 1px; }
-        .text-green { color: var(--primary); text-shadow: 0 0 5px var(--primary); }
-        .text-blue { color: var(--secondary); text-shadow: 0 0 5px var(--secondary); }
-        .text-gold { color: var(--gold); }
+        /* --- TYPOGRAPHY --- */
+        h1, h2, h3, h5, .pixel-font { font-family: var(--pixel-font); text-transform: uppercase; line-height: 1.5; }
+        .text-blue { color: var(--godot-blue); }
+        .text-green { color: var(--pixel-green); }
 
-        /* GLITCH ANIMATION */
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
-
-        /* NAVBAR */
+        /* --- NAVBAR --- */
         .navbar {
-            background-color: rgba(13, 13, 18, 0.95);
-            border-bottom: 2px solid var(--primary);
+            background-color: rgba(33, 37, 41, 0.95);
+            border-bottom: 4px solid var(--godot-blue);
             padding: 1rem;
             z-index: 1000;
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
         }
-        .navbar-brand { font-family: var(--pixel-font); font-size: 0.8rem; color: var(--primary) !important; }
-        .nav-link { font-family: var(--mono-font); font-size: 1rem; color: #fff !important; margin-left: 15px; text-transform: uppercase; }
-        .nav-link:hover { color: var(--primary) !important; text-decoration: underline; }
+        .navbar-brand { font-family: var(--pixel-font); font-size: 0.8rem; color: #fff !important; }
+        .nav-link { font-family: var(--pixel-font); font-size: 0.6rem; color: #ccc !important; margin-left: 15px; }
+        .nav-link:hover { color: var(--godot-blue) !important; }
 
-        /* HERO SECTION */
+        /* --- HERO GAME SECTION --- */
         #hero-game {
             position: relative;
             height: 100vh;
-            max-height: 800px;
-            background: #000;
+            max-height: 700px;
+            background: linear-gradient(to bottom, #3a404d 0%, #212529 100%); /* Night Sky */
+            border-bottom: 8px solid #5d4037; /* Dirt/Ground */
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-bottom: 4px solid var(--primary);
         }
         #platformer-canvas {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0.6; 
         }
         .hero-overlay {
             position: relative;
             z-index: 10;
             text-align: center;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.7);
             padding: 2.5rem;
-            border: 2px solid var(--primary);
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
-            max-width: 700px;
+            border: 4px solid #fff;
+            box-shadow: 8px 8px 0 rgba(0,0,0,0.5);
+            max-width: 650px;
             width: 90%;
         }
 
-        /* TYPING EFFECT */
-        .typing-container {
-            display: inline-block;
-            overflow: hidden;
-            white-space: nowrap;
-            border-right: 3px solid var(--primary);
-            animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
-            font-family: var(--pixel-font);
-            font-size: 1.2rem;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-        @keyframes typing { from { width: 0 } to { width: 100% } }
-        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--primary); } }
-
-        /* PFP */
+        /* --- PFP --- */
         .pfp-container {
-            width: 130px; height: 130px; margin: 0 auto 20px;
-            border: 4px solid var(--primary);
-            box-shadow: 0 0 20px var(--primary);
-            border-radius: 50%;
-            overflow: hidden;
+            width: 120px; height: 120px; margin: 0 auto 20px;
+            border: 4px solid #fff;
+            box-shadow: 6px 6px 0 var(--godot-blue);
             background: #000;
         }
-        .pfp-img { width: 100%; height: 100%; object-fit: cover; }
+        .pfp-img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
 
-        /* CARDS */
+        /* --- PROJECTS --- */
         .section-title {
             text-align: center; margin: 5rem 0 3rem;
-            font-size: 1.5rem; color: #fff;
-            border-bottom: 2px solid #333;
-            display: inline-block;
-            padding-bottom: 10px;
+            font-size: 1.5rem; color: var(--godot-blue);
+            text-shadow: 3px 3px 0 #000;
         }
         .project-card {
             background: var(--card-bg);
-            border: 1px solid #333;
+            border: 2px solid #444;
             height: 100%;
-            display: flex;
-            flex-direction: column;
-            transition: 0.3s;
-            position: relative;
-            overflow: hidden;
+            display: flex; flex-direction: column;
+            transition: transform 0.2s;
         }
         .project-card:hover {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
-            animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both;
+            transform: translateY(-5px);
+            border-color: var(--godot-blue);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
         .project-icon {
-            font-size: 3rem; padding: 20px; background: #111;
-            text-align: center; border-bottom: 1px solid #333;
+            font-size: 2.5rem; padding: 25px; background: #222;
+            text-align: center; border-bottom: 2px solid #444; color: #888;
         }
         .card-content { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
         .badge-tech {
-            background: rgba(0, 255, 65, 0.1);
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            font-family: var(--mono-font);
-            font-size: 0.7rem; padding: 4px 8px; margin: 0 4px 6px 0;
+            background: #333; color: var(--godot-blue); border: 1px solid var(--godot-blue);
+            font-family: var(--pixel-font); font-size: 0.5rem; padding: 4px 6px; margin: 0 4px 6px 0;
             display: inline-block;
         }
-        .badge-hack {
-            background: var(--gold); color: #000; font-weight: bold;
-            font-family: var(--pixel-font); font-size: 0.6rem;
-            padding: 5px; display: block; text-align: center; margin-bottom: 10px;
-        }
 
-        /* INVENTORY (SKILLS) */
-        .inventory-panel {
-            background: #0f0f12;
-            border: 2px solid #333;
+        /* --- INVENTORY (SKILLS) --- */
+        .inventory-box {
+            background: #222;
+            border: 4px solid #555;
             padding: 20px;
+            box-shadow: inset 0 0 20px #000;
         }
-        .skill-tag {
-            display: inline-block;
-            background: #1a1a20;
-            border-left: 3px solid var(--secondary);
-            color: #ccc;
-            padding: 5px 10px; margin: 3px;
-            font-size: 0.8rem;
-            transition: 0.2s;
+        .skill-header {
+            font-family: var(--pixel-font); font-size: 0.7rem; color: var(--pixel-green);
+            margin-bottom: 15px; border-bottom: 1px dashed #444; padding-bottom: 5px;
         }
-        .skill-tag:hover { background: var(--secondary); color: #fff; transform: scale(1.05); }
+        .skill-item {
+            display: inline-block; background: #333; color: #fff;
+            padding: 5px 10px; margin: 3px; font-size: 0.8rem; border-radius: 2px;
+        }
 
-        /* ARCADE GAME */
-        #arcade { background: #050505; border-top: 2px dashed var(--alert); border-bottom: 2px dashed var(--alert); padding: 50px 0; }
+        /* --- ARCADE GAME (Bonus) --- */
+        #arcade { background: #111; border-top: 4px solid var(--pixel-green); padding: 50px 0; }
         .game-wrapper {
             position: relative; width: 100%; max-width: 600px; margin: 0 auto;
-            border: 4px solid var(--alert); box-shadow: 0 0 20px var(--alert);
-            aspect-ratio: 2 / 1;
+            border: 4px solid #fff; aspect-ratio: 2 / 1;
         }
         #shooter-canvas { width: 100%; height: 100%; display: block; background: #000; cursor: crosshair; }
         #game-over-screen {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); flex-direction: column; justify-content: center; align-items: center; z-index: 20;
+            background: rgba(0,0,0,0.85); flex-direction: column; justify-content: center; align-items: center; z-index: 20;
         }
 
-        /* CONTACT FORM */
-        .form-card { background: var(--card-bg); border: 2px solid var(--primary); padding: 2rem; }
+        /* --- FORM FIX --- */
+        .form-card {
+            background: var(--card-bg);
+            border: 2px solid var(--pixel-green);
+            padding: 2rem;
+            position: relative; z-index: 5; /* Mobile Visibility Fix */
+        }
         .form-control, .form-select {
-            background-color: #000; border: 1px solid #444; color: var(--primary);
-            font-family: var(--mono-font); border-radius: 0;
+            background: #222; border: 2px solid #555; color: #fff; border-radius: 0;
         }
-        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0,255,65,0.3); background: #000; color: #fff; }
+        .form-control:focus { background: #000; color: #fff; border-color: var(--pixel-green); box-shadow: none; }
 
-        /* BUTTONS */
-        .btn-retro {
-            background: transparent; border: 2px solid var(--primary); color: var(--primary);
-            font-family: var(--pixel-font); font-size: 0.7rem; padding: 10px 20px;
-            text-transform: uppercase; transition: 0.2s; cursor: pointer; text-decoration: none; display: inline-block;
+        /* --- BUTTONS --- */
+        .btn-game {
+            font-family: var(--pixel-font); background: var(--godot-blue); color: #fff;
+            border: none; padding: 12px 20px; font-size: 0.7rem;
+            box-shadow: 4px 4px 0 #000; text-decoration: none; display: inline-block;
+            margin-top: auto; cursor: pointer;
         }
-        .btn-retro:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
-        .btn-linkedin {
-            border-color: #0a66c2; color: #0a66c2;
-        }
-        .btn-linkedin:hover {
-            background: #0a66c2; color: #fff; box-shadow: 0 0 15px #0a66c2;
-        }
-        .btn-submit { width: 100%; margin-top: 15px; }
-
-        footer { border-top: 1px solid #333; padding: 4rem 0; text-align: center; background: #0d0d12; }
-        .social-icon { font-size: 2rem; color: #555; margin: 0 15px; transition: 0.3s; }
-        .social-icon:hover { color: var(--primary); transform: scale(1.2); text-shadow: 0 0 10px var(--primary); }
+        .btn-game:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #000; background: #5aaee0; color: #fff; }
+        .btn-linkedin { background: #0a66c2; }
+        .btn-linkedin:hover { background: #004182; }
+        
+        /* --- FOOTER --- */
+        footer { background: #111; padding: 4rem 0; text-align: center; border-top: 4px solid #333; }
+        .social-link { font-size: 2rem; color: #666; margin: 0 15px; transition: 0.2s; }
+        .social-link:hover { color: var(--godot-blue); transform: scale(1.1); }
 
         @media (max-width: 768px) {
+            h1 { font-size: 1.1rem !important; }
             .hero-overlay { padding: 1.5rem; }
-            .typing-container { font-size: 0.8rem; white-space: normal; animation: none; border: none; }
-            h1 { font-size: 1.2rem; }
-            .game-wrapper { width: 95%; }
+            .game-wrapper { width: 95%; border-width: 2px; }
+            .form-card { padding: 1.5rem 1rem; }
         }
     </style>
 </head>
@@ -234,16 +176,16 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#"><i class="fas fa-terminal"></i> SYS.ADMIN: AKSHAT JAIN</a>
+            <a class="navbar-brand" href="#"><i class="fas fa-gamepad"></i> AKSHAT JAIN</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="#hero-game">HOME</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#hero-game">START</a></li>
                     <li class="nav-item"><a class="nav-link" href="#quests">PROJECTS</a></li>
                     <li class="nav-item"><a class="nav-link" href="#inventory">SKILLS</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#arcade">GAME</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#arcade">ARCADE</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contact">CONTACT</a></li>
                 </ul>
             </div>
@@ -256,40 +198,33 @@
             <div class="pfp-container">
                 <img src="https://github.com/akshatjaiin.png" alt="Akshat PFP" class="pfp-img">
             </div>
-            
-            <h1 class="text-green mb-2">AKSHAT JAIN</h1>
-            <div class="typing-container">FOUNDER E-CELL | AI ENGINEER | GAME DEV</div>
-            
-            <p class="mb-4 text-white" style="font-size: 0.9rem;">
-                Specializing in <span class="text-blue">Python, Godot & Full Stack</span>.
-                <br>Building the future of AI & Interactive Tech.
+            <h1 class="mb-3">AKSHAT JAIN</h1>
+            <p class="mb-4 text-muted small">
+                FOUNDER E-CELL | AI ENGINEER | GAME DEV<br>
+                <span class="text-blue">Godot • Python • Full Stack</span>
             </p>
-            
             <div class="d-flex justify-content-center gap-3 flex-wrap">
-                <a href="#quests" class="btn-retro">INITIALIZE PROJECTS</a>
-                <a href="https://github.com/akshatjaiin" target="_blank" class="btn-retro" style="border-color:#fff; color:#fff"><i class="fab fa-github"></i> GITHUB</a>
+                <a href="#quests" class="btn-game">VIEW PROJECTS</a>
+                <a href="https://github.com/akshatjaiin" target="_blank" class="btn-game" style="background:#333"><i class="fab fa-github"></i> GITHUB</a>
             </div>
         </div>
     </section>
 
     <section id="quests" class="container">
-        <div class="text-center"><h2 class="section-title">ACTIVE MISSIONS</h2></div>
+        <h2 class="section-title">ACTIVE QUESTS</h2>
         <div class="row g-4 justify-content-center">
             
             <div class="col-md-6 col-lg-4">
                 <div class="project-card">
-                    <div class="badge-hack"><i class="fas fa-trophy"></i> HACKATHON WINNER [cite: 49]</div>
                     <div class="project-icon text-green"><i class="fas fa-seedling"></i></div>
                     <div class="card-content">
-                        <h5 class="pixel-text">Kisan AI (Farm-Saathi)</h5>
+                        <h5 class="pixel-font">Kisan AI (Farm-Saathi)</h5>
                         <p class="small text-muted">
-                            Smart farming assistant using <b>Custom Neural Networks</b> for yield prediction [cite: 50] and OpenAI for real-time advice[cite: 51].
+                            Hackathon Winning Project. Smart farming assistant using <b>Custom Neural Networks</b> and React.
                         </p>
                         <div class="mt-auto">
-                            <span class="badge-tech">REACT</span>
-                            <span class="badge-tech">MONGODB</span>
-                            <span class="badge-tech">NEURAL NETS</span>
-                            <a href="https://github.com/akshatjaiin/Farm-Saathi" target="_blank" class="btn-retro w-100 mt-3">ACCESS REPO</a>
+                            <span class="badge-tech">REACT</span><span class="badge-tech">AI/ML</span>
+                            <a href="https://github.com/akshatjaiin/Farm-Saathi" target="_blank" class="btn-game w-100 mt-3">VIEW CODE</a>
                         </div>
                     </div>
                 </div>
@@ -299,15 +234,13 @@
                 <div class="project-card">
                     <div class="project-icon text-blue"><i class="fas fa-ghost"></i></div>
                     <div class="card-content">
-                        <h5 class="pixel-text">Falled Knight</h5>
+                        <h5 class="pixel-font">Falled Knight</h5>
                         <p class="small text-muted">
-                            A polished 2D Action Platformer. Implements physics-based movement, enemy AI state machines, and level design.
+                            2D Action Platformer made with Godot. Physics-based movement, Slime enemy AI, and level design.
                         </p>
                         <div class="mt-auto">
-                            <span class="badge-tech">GODOT 4</span>
-                            <span class="badge-tech">GDSCRIPT</span>
-                            <span class="badge-tech">GAME DEV</span>
-                            <a href="https://github.com/akshatjaiin/GameGodot" target="_blank" class="btn-retro w-100 mt-3">PLAY / CODE</a>
+                            <span class="badge-tech">GODOT</span><span class="badge-tech">GDSCRIPT</span>
+                            <a href="https://github.com/akshatjaiin/GameGodot" target="_blank" class="btn-game w-100 mt-3">PLAY / CODE</a>
                         </div>
                     </div>
                 </div>
@@ -315,17 +248,15 @@
 
             <div class="col-md-6 col-lg-4">
                 <div class="project-card">
-                    <div class="project-icon" style="color: #fff"><i class="fas fa-briefcase"></i></div>
+                    <div class="project-icon" style="color:#fff"><i class="fas fa-briefcase"></i></div>
                     <div class="card-content">
-                        <h5 class="pixel-text">Placement.AI</h5>
+                        <h5 class="pixel-font">Placement.AI</h5>
                         <p class="small text-muted">
-                            One-stop career solution with ATS resume analysis and personalized learning paths[cite: 52, 53].
+                            Career platform with ATS resume analysis and job preparation tools using Next.js & OpenAI.
                         </p>
                         <div class="mt-auto">
-                            <span class="badge-tech">NEXT.JS</span>
-                            <span class="badge-tech">OPENAI</span>
-                            <span class="badge-tech">FULL STACK</span>
-                            <a href="https://www.linkedin.com/in/akshatjaiin/recent-activity/all/" target="_blank" class="btn-retro btn-linkedin w-100 mt-3"><i class="fab fa-linkedin"></i> VIEW POST</a>
+                            <span class="badge-tech">NEXT.JS</span><span class="badge-tech">OPENAI</span>
+                            <a href="https://www.linkedin.com/in/akshatjaiin/recent-activity/all/" target="_blank" class="btn-game btn-linkedin w-100 mt-3"><i class="fab fa-linkedin"></i> LINKEDIN POST</a>
                         </div>
                     </div>
                 </div>
@@ -333,17 +264,15 @@
 
             <div class="col-md-6 col-lg-4">
                 <div class="project-card">
-                    <div class="project-icon text-gold"><i class="fas fa-robot"></i></div>
+                    <div class="project-icon text-warning"><i class="fas fa-robot"></i></div>
                     <div class="card-content">
-                        <h5 class="pixel-text">Museum Ticket Bot</h5>
+                        <h5 class="pixel-font">Museum Ticket Bot</h5>
                         <p class="small text-muted">
-                            AI chatbot utilizing Google Gemini API for NLP and JSON structuring for automated booking[cite: 68].
+                            AI chatbot for booking tickets. Uses Google Gemini API and structured JSON data handling.
                         </p>
                         <div class="mt-auto">
-                            <span class="badge-tech">PYTHON</span>
-                            <span class="badge-tech">LLM</span>
-                            <span class="badge-tech">GEMINI</span>
-                            <a href="https://github.com/akshatjaiin/ticket" target="_blank" class="btn-retro w-100 mt-3">ACCESS REPO</a>
+                            <span class="badge-tech">PYTHON</span><span class="badge-tech">GEMINI</span>
+                            <a href="https://github.com/akshatjaiin/ticket" target="_blank" class="btn-game w-100 mt-3">VIEW CODE</a>
                         </div>
                     </div>
                 </div>
@@ -351,17 +280,15 @@
 
             <div class="col-md-6 col-lg-4">
                 <div class="project-card">
-                    <div class="badge-hack" style="background:var(--secondary);">RUNNER-UP [cite: 69]</div>
-                    <div class="project-icon" style="color: #0a66c2"><i class="fab fa-linkedin"></i></div>
+                    <div class="project-icon" style="color:#0a66c2"><i class="fab fa-linkedin"></i></div>
                     <div class="card-content">
-                        <h5 class="pixel-text">Profile Analyzer</h5>
+                        <h5 class="pixel-font">Profile Analyzer</h5>
                         <p class="small text-muted">
-                            Python automation tool using Selenium to scrape and analyze profiles for resume optimization[cite: 69].
+                            Automated Python tool using Selenium to scrape and analyze LinkedIn profiles for resume tips.
                         </p>
                         <div class="mt-auto">
-                            <span class="badge-tech">PYTHON</span>
-                            <span class="badge-tech">SELENIUM</span>
-                            <a href="https://github.com/akshatjaiin/LINKEDIN" target="_blank" class="btn-retro w-100 mt-3">ACCESS REPO</a>
+                            <span class="badge-tech">PYTHON</span><span class="badge-tech">SELENIUM</span>
+                            <a href="https://github.com/akshatjaiin/LINKEDIN" target="_blank" class="btn-game w-100 mt-3">VIEW CODE</a>
                         </div>
                     </div>
                 </div>
@@ -369,17 +296,15 @@
 
             <div class="col-md-6 col-lg-4">
                 <div class="project-card">
-                    <div class="badge-hack" style="background:#666; color:#fff">FINALIST [cite: 65]</div>
                     <div class="project-icon text-white"><i class="fas fa-rocket"></i></div>
                     <div class="card-content">
-                        <h5 class="pixel-text">Linkedin Posts</h5>
+                        <h5 class="pixel-font">NASA Game Design</h5>
                         <p class="small text-muted">
-                            mostly hackathons
+                            Game Design Documents (GDD) and mechanics for a Unity-based space game. Finalist project.
                         </p>
                         <div class="mt-auto">
-                            <span class="badge-tech">everthing</span>
-                            <span class="badge-tech">Please visit</span>
-                            <a href="https://www.linkedin.com/in/akshatjaiin/recent-activity/all/" target="_blank" class="btn-retro btn-linkedin w-100 mt-3"><i class="fab fa-linkedin"></i> VIEW POST</a>
+                            <span class="badge-tech">UNITY</span><span class="badge-tech">DESIGN</span>
+                            <a href="https://www.linkedin.com/in/akshatjaiin/recent-activity/all/" target="_blank" class="btn-game btn-linkedin w-100 mt-3"><i class="fab fa-linkedin"></i> LINKEDIN POST</a>
                         </div>
                     </div>
                 </div>
@@ -389,44 +314,45 @@
     </section>
 
     <section id="inventory" class="container mt-5">
-        <div class="text-center"><h2 class="section-title">SKILL INVENTORY</h2></div>
+        <h2 class="section-title">INVENTORY & SKILLS</h2>
         <div class="row">
             <div class="col-lg-6 mb-4">
-                <div class="inventory-panel">
-                    <h5 class="text-green mb-3">> LANGUAGES & CORE</h5>
-                    <span class="skill-tag">Python (Expert) [cite: 10]</span>
-                    <span class="skill-tag">C++ / C [cite: 10]</span>
-                    <span class="skill-tag">Java [cite: 10]</span>
-                    <span class="skill-tag">JavaScript / TS [cite: 13]</span>
-                    <span class="skill-tag">HTML5 / CSS3 [cite: 13]</span>
+                <div class="inventory-box">
+                    <div class="skill-header">> LANGUAGES & CORE</div>
+                    <div>
+                        <span class="skill-item">Python (Expert)</span>
+                        <span class="skill-item">C++</span>
+                        <span class="skill-item">Java</span>
+                        <span class="skill-item">JavaScript</span>
+                        <span class="skill-item">HTML/CSS</span>
+                    </div>
                     
-                    <h5 class="text-green mb-3 mt-4">> AI & DATA</h5>
-                    <span class="skill-tag">OpenCV [cite: 19]</span>
-                    <span class="skill-tag">YOLO [cite: 67]</span>
-                    <span class="skill-tag">TensorFlow [cite: 59]</span>
-                    <span class="skill-tag">NumPy / Pandas [cite: 19]</span>
-                    <span class="skill-tag">Bias Detection [cite: 13]</span>
+                    <div class="skill-header mt-4">> AI & DATA</div>
+                    <div>
+                        <span class="skill-item">OpenCV</span>
+                        <span class="skill-item">YOLO</span>
+                        <span class="skill-item">TensorFlow</span>
+                        <span class="skill-item">Pandas/NumPy</span>
+                        <span class="skill-item">Bias Detection</span>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-6">
-                <div class="inventory-panel">
-                    <h5 class="text-blue mb-3">> WEB & CLOUD</h5>
-                    <span class="skill-tag">React / Next.js [cite: 21]</span>
-                    <span class="skill-tag">Django [cite: 21]</span>
-                    <span class="skill-tag">AWS / GCP [cite: 11]</span>
-                    <span class="skill-tag">Docker [cite: 11]</span>
-                    <span class="skill-tag">MongoDB / Redis [cite: 13]</span>
-                    
-                    <h5 class="text-blue mb-3 mt-4">> CERTIFICATIONS</h5>
-                    <div class="d-flex align-items-center mb-2">
-                        <i class="fas fa-medal text-gold me-2"></i> <small>AI Trainer (Aerophantom) [cite: 79]</small>
+                <div class="inventory-box">
+                    <div class="skill-header">> WEB & CLOUD</div>
+                    <div>
+                        <span class="skill-item">React.js</span>
+                        <span class="skill-item">Next.js</span>
+                        <span class="skill-item">Django</span>
+                        <span class="skill-item">AWS</span>
+                        <span class="skill-item">Docker</span>
+                        <span class="skill-item">MongoDB</span>
                     </div>
-                    <div class="d-flex align-items-center mb-2">
-                        <i class="fas fa-medal text-gold me-2"></i> <small>CS50P (Harvard) [cite: 80]</small>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-medal text-gold me-2"></i> <small>C Language (IIT Bombay) [cite: 84]</small>
-                    </div>
+
+                    <div class="skill-header mt-4">> CERTIFICATES</div>
+                    <div class="text-white small mb-2"><i class="fas fa-medal text-warning"></i> AI Trainer (Aerophantom)</div>
+                    <div class="text-white small mb-2"><i class="fas fa-medal text-warning"></i> CS50P (Harvard)</div>
+                    <div class="text-white small"><i class="fas fa-medal text-warning"></i> C Language (IIT Bombay)</div>
                 </div>
             </div>
         </div>
@@ -434,44 +360,43 @@
 
     <section id="arcade">
         <div class="container text-center">
-            <h2 class="pixel-text text-white mb-3" style="text-shadow: 2px 2px #ff0055;">NEON SURVIVAL</h2>
-            <p class="text-muted small mb-4">PC: MOUSE AIM | MOBILE: TOUCH DRAG</p>
+            <h2 class="pixel-font text-white mb-3">BONUS ROUND: NEON DEFENSE</h2>
+            <p class="text-muted small mb-4">PC: CLICK TO SHOOT | MOBILE: TAP TO SHOOT</p>
             
             <div class="game-wrapper">
                 <canvas id="shooter-canvas" width="600" height="300"></canvas>
                 <div id="game-over-screen">
-                    <h2 class="text-danger pixel-text">SYSTEM FAILURE</h2>
-                    <p id="final-score" class="text-white pixel-text mb-4">SCORE: 0</p>
-                    <button class="btn-retro" onclick="resetShooter()">REBOOT SYSTEM</button>
+                    <h2 class="text-danger pixel-font">GAME OVER</h2>
+                    <p id="final-score" class="text-white pixel-font mb-4">SCORE: 0</p>
+                    <button class="btn-game" onclick="resetShooter()">TRY AGAIN</button>
                 </div>
             </div>
-            
-            <button id="start-btn" class="btn-retro mt-4" onclick="startShooter()">START GAME</button>
+            <button id="start-btn" class="btn-game mt-4" onclick="startShooter()">START GAME</button>
         </div>
     </section>
 
     <section id="contact" class="container mb-5 mt-5">
         <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
+            <div class="col-12 col-md-8 col-lg-6">
                 <div class="form-card">
                     <div class="text-center mb-4">
-                        <h5 class="pixel-text text-green">ESTABLISH UPLINK</h5>
+                        <h5 class="pixel-font text-green">JOIN THE GUILD</h5>
                     </div>
                     <form id="myForm">
                         <div class="mb-3">
-                            <label>CODENAME (NAME):</label>
+                            <label class="pixel-font text-muted small">NAME</label>
                             <input type="text" class="form-control" name="Name" required>
                         </div>
                         <div class="mb-3">
-                            <label>FREQ (EMAIL):</label>
+                            <label class="pixel-font text-muted small">EMAIL</label>
                             <input type="email" class="form-control" name="Email" required>
                         </div>
                         <div class="mb-3">
-                            <label>SIGNAL (PHONE):</label>
+                            <label class="pixel-font text-muted small">PHONE</label>
                             <input type="tel" class="form-control" name="Phone" required>
                         </div>
                         <div class="mb-3">
-                            <label>ORIGIN:</label>
+                            <label class="pixel-font text-muted small">SOURCE</label>
                             <select class="form-select" name="Found" required>
                                 <option value="linkedin">LinkedIn</option>
                                 <option value="github">GitHub</option>
@@ -479,7 +404,7 @@
                                 <option value="other">Other</option>
                             </select>
                         </div>
-                        <button type="button" class="btn-retro btn-submit" onclick="SubForm()">SEND PACKET</button>
+                        <button type="button" class="btn-game w-100" onclick="SubForm()">SEND MESSAGE</button>
                     </form>
                 </div>
             </div>
@@ -488,12 +413,12 @@
 
     <footer>
         <div class="container">
-            <p class="mb-4 text-muted pixel-text">© 2025 AKSHAT JAIN. ALL SYSTEMS NORMAL.</p>
+            <p class="mb-4 text-muted pixel-font" style="font-size: 0.6rem;">© 2025 AKSHAT JAIN. ALL RIGHTS RESERVED.</p>
             <div class="d-flex justify-content-center">
-                <a href="https://linkedin.com/in/akshatjaiin" target="_blank" class="social-icon"><i class="fab fa-linkedin"></i></a>
-                <a href="https://github.com/akshatjaiin" target="_blank" class="social-icon"><i class="fab fa-github"></i></a>
-                <a href="https://bento.me/akshatjain" target="_blank" class="social-icon"><i class="fas fa-link"></i></a>
-                <a href="https://instagram.com/akshat_senpai" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
+                <a href="https://linkedin.com/in/akshatjaiin" target="_blank" class="social-link"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/akshatjaiin" target="_blank" class="social-link"><i class="fab fa-github"></i></a>
+                <a href="https://bento.me/akshatjain" target="_blank" class="social-link"><i class="fas fa-link"></i></a>
+                <a href="https://instagram.com/akshat_senpai" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
     </footer>
@@ -502,11 +427,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // --- FORM LOGIC ---
+        // --- CONTACT FORM LOGIC ---
         function SubForm (){
-            const btn = document.querySelector('.btn-submit');
+            const btn = document.querySelector('.btn-game.w-100');
             const originalText = btn.innerText;
-            btn.innerText = "TRANSMITTING...";
+            btn.innerText = "SENDING...";
             btn.disabled = true;
 
             $.ajax({
@@ -517,18 +442,18 @@
                 }, {})),
                 contentType: "application/json",
                 success: function(){
-                    alert("PACKET RECEIVED.");
+                    alert("Message Sent Successfully!");
                     document.getElementById("myForm").reset();
                     btn.innerText = originalText; btn.disabled = false;
                 },
                 error: function(){
-                    alert("TRANSMISSION ERROR.");
+                    alert("Error Sending Message.");
                     btn.innerText = originalText; btn.disabled = false;
                 }
             });
         }
 
-        // --- BACKGROUND GAME (GODOT STYLE) ---
+        // --- HERO PLATFORMER GAME (Godot Visuals) ---
         (function() {
             const canvas = document.getElementById('platformer-canvas');
             const ctx = canvas.getContext('2d');
@@ -539,6 +464,7 @@
             }
             window.addEventListener('resize', resize);
             resize();
+
             const player = { x: 50, y: 100, dx: 2, dy: 0, size: 24, color: '#478cbf' };
             const platforms = [];
             function init() {
@@ -548,11 +474,12 @@
             }
             function update() {
                 ctx.clearRect(0,0,w,h);
-                // Cyber Grid
-                ctx.strokeStyle = 'rgba(0, 255, 65, 0.1)';
+                // Grid Background
+                ctx.strokeStyle = 'rgba(255,255,255,0.05)';
                 ctx.lineWidth = 1;
                 for(let x=0; x<w; x+=40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
                 
+                // Physics
                 player.x += player.dx;
                 if(player.x > w || player.x < 0) player.dx *= -1;
                 player.dy += 0.5;
@@ -562,24 +489,28 @@
                 if(player.y + player.size > ground) { player.y = ground - player.size; player.dy = -13; }
 
                 platforms.forEach(p => {
-                    ctx.fillStyle = '#1a1a1a'; ctx.fillRect(p.x, p.y, p.w, p.h); 
-                    ctx.fillStyle = '#00ff41'; ctx.fillRect(p.x, p.y, p.w, 2);   
+                    ctx.fillStyle = '#5d4037'; ctx.fillRect(p.x, p.y, p.w, p.h); 
+                    ctx.fillStyle = '#6abe30'; ctx.fillRect(p.x, p.y, p.w, 4);   
                     if(player.y + player.size > p.y && player.y + player.size < p.y + p.h + 10 &&
                        player.x > p.x && player.x < p.x + p.w && player.dy > 0) { player.dy = -13; }
                 });
 
+                // Player
                 ctx.fillStyle = player.color; ctx.fillRect(player.x, player.y, player.size, player.size);
-                ctx.shadowBlur = 10; ctx.shadowColor = player.color;
-                
-                ctx.fillStyle = '#00ff41'; ctx.fillRect(0, h-20, w, 20);
-                ctx.shadowBlur = 0;
+                // Eyes
+                ctx.fillStyle = '#fff';
+                if(player.dx > 0) ctx.fillRect(player.x+14, player.y+6, 4, 4);
+                else ctx.fillRect(player.x+6, player.y+6, 4, 4);
+
+                // Ground
+                ctx.fillStyle = '#6abe30'; ctx.fillRect(0, h-20, w, 20);
                 requestAnimationFrame(update);
             }
             init();
             requestAnimationFrame(update);
         })();
 
-        // --- ARCADE SHOOTER (TOUCH & RESPONSIVE) ---
+        // --- ARCADE GAME (Touch Enabled & Death Logic) ---
         let shooterId;
         let isGameRunning = false;
         const sCanvas = document.getElementById('shooter-canvas');
@@ -622,37 +553,33 @@
 
         function loopShooter() {
             if(!isGameRunning) return;
-            sCtx.clearRect(0,0, sCanvas.width, sCanvas.height);
+            sCtx.fillStyle = '#000'; sCtx.fillRect(0,0, sCanvas.width, sCanvas.height);
 
             // Player
-            sCtx.fillStyle = '#00ff41'; sCtx.fillRect(sPlayer.x, sPlayer.y-10, 20, 20);
-            sCtx.shadowBlur = 10; sCtx.shadowColor = '#00ff41';
+            sCtx.fillStyle = '#478cbf'; sCtx.fillRect(sPlayer.x, sPlayer.y-10, 20, 20);
 
             // Bullets
-            sCtx.fillStyle = '#fff'; sCtx.shadowBlur = 5; sCtx.shadowColor = '#fff';
+            sCtx.fillStyle = '#fff';
             bullets.forEach((b, i) => {
                 b.x += 8; sCtx.fillRect(b.x, b.y, 8, 3);
                 if(b.x > sCanvas.width) bullets.splice(i,1);
             });
 
             // Enemies
-            sCtx.fillStyle = '#ff0055'; sCtx.shadowBlur = 10; sCtx.shadowColor = '#ff0055';
+            sCtx.fillStyle = '#ff0055';
             enemies.forEach((e, i) => {
                 e.x -= e.speed; sCtx.fillRect(e.x, e.y, e.size, e.size);
-
                 bullets.forEach((b, j) => {
                     let dx = b.x - e.x; let dy = b.y - e.y;
                     if(Math.sqrt(dx*dx+dy*dy) < 20) {
                         createExplosion(e.x, e.y, '#ff0055'); enemies.splice(i,1); bullets.splice(j,1); score += 10;
                     }
                 });
-
                 if (e.x < sPlayer.x + 20 && e.x + e.size > sPlayer.x && e.y < sPlayer.y + 10 && e.y + e.size > sPlayer.y - 10) { gameOver(); }
                 if(e.x < 0) enemies.splice(i,1);
             });
 
             // Particles
-            sCtx.shadowBlur = 0;
             particles.forEach((p, i) => {
                 p.x += p.dx; p.y += p.dy; p.life -= 0.1;
                 sCtx.fillStyle = p.color; sCtx.globalAlpha = p.life; sCtx.fillRect(p.x, p.y, 3, 3);
@@ -660,7 +587,6 @@
                 if(p.life <= 0) particles.splice(i,1);
             });
 
-            // Score
             sCtx.fillStyle = '#fff'; sCtx.font = '12px "Press Start 2P"'; sCtx.fillText("SCORE: " + score, 10, 25);
             shooterId = requestAnimationFrame(loopShooter);
         }
